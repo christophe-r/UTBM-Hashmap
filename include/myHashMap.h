@@ -50,7 +50,6 @@ int hashmapCountTechno(HashMap* map, char* techno);
 // Miscellaneous (comparison, hashing)
 bool equalKeys(char* keyA, int hashA, char* keyB, int hashB);
 int hashmapIntHash(char* key);
-//void hashmapForEach(HashMap* map, bool (*callback)(Entry* entry, int index) );
 
 // Display functions (display hashmap: graph & stats, entry)
 void entryDisplay(Entry* entry, int index);
