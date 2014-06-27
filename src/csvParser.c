@@ -14,22 +14,22 @@ void parseCSV(char *fileName, HashMap *map){
 	fprintf(stdout, "Parsing CSV file...\n");
 	#endif
 
-    FILE *file;
-    file = fopen(fileName, "r");
+	FILE *file;
+	file = fopen(fileName, "r");
 
-    if( file == NULL ){
-        perror(fileName);
-        return;
-    }
+	if( file == NULL ){
+		perror(fileName);
+		return;
+	}
 
 
-    char buffer[256];
+	char buffer[256];
 	memset(buffer, '\0', sizeof(buffer)); // Reset buffer
 
 	int count;
 	char *token;
 	char *delim = ",";
-    while( fgets(buffer, 256, file) != NULL ){
+	while( fgets(buffer, 256, file) != NULL ){
 
 			token = strtok(buffer, delim);
 
@@ -47,9 +47,9 @@ void parseCSV(char *fileName, HashMap *map){
 				hashmapPut(map, sub_strings[0], sub_strings[1], sub_strings[2], sub_strings[3], (double)atof(sub_strings[4]), (double)atof(sub_strings[5]));
 			}
 
-    }
+	}
 
-    fclose(file);
+	fclose(file);
 
 	return;
 }

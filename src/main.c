@@ -5,9 +5,7 @@
 
 int main(void) {
 
-	
 	runSimulation();
 
-
-    return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }

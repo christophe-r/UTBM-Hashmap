@@ -30,30 +30,30 @@
 // HashMap (create, expand, free)
 
 HashMap* hashmapCreate(size_t initialCapacity, int (*hash)(char* key)) {
-    assert(hash != NULL);
-    
-    HashMap* map = malloc(sizeof(HashMap));
-    if (map == NULL) {
-        return NULL;
-    }
+	assert(hash != NULL);
+
+	HashMap* map = malloc(sizeof(HashMap));
+	if (map == NULL) {
+		return NULL;
+	}
 
 	map->bucketCount = initialCapacity;
 
-    map->buckets = calloc(map->bucketCount, sizeof(Entry*));
-    if (map->buckets == NULL) {
-        free(map);
-        return NULL;
-    }
-    
-    map->size = 0;
+	map->buckets = calloc(map->bucketCount, sizeof(Entry*));
+	if (map->buckets == NULL) {
+		free(map);
+		return NULL;
+	}
 
-    map->hash = hash; // function pointer
+	map->size = 0;
+
+	map->hash = hash; // function pointer
 
 	#ifdef DEBUG
 	fprintf(stdout, "HashMap Init OK. NumberOfBuckets=%d\n", (int)map->bucketCount);
-    #endif
+	#endif
 
-    return map;
+	return map;
 }
 
 
@@ -62,17 +62,17 @@ void hashmapFree(HashMap* map) {
 	fprintf(stdout, "Freeing the HashMap...\n");
 	#endif
 
-    size_t i;
-    for (i = 0; i < map->bucketCount; i++) {
-        Entry* entry = map->buckets[i];
-        while (entry != NULL) {
-            Entry* next = entry->next;
+	size_t i;
+	for (i = 0; i < map->bucketCount; i++) {
+		Entry* entry = map->buckets[i];
+		while (entry != NULL) {
+		    Entry* next = entry->next;
 			entryFree(entry);
-            entry = next;
-        }
-    }
-    free(map->buckets);
-    free(map);
+		    entry = next;
+		}
+	}
+	free(map->buckets);
+	free(map);
 }
 
 
@@ -83,38 +83,38 @@ size_t calculateIndex(size_t bucketCount, int hash) {
 
 void hashmapExpandTest(HashMap* map) {
 
-    // If the load factor exceeds 1/0.7...
-    if (map->size > (map->bucketCount * LOAD_FACTOR)) {
+	// If the load factor exceeds 1/0.7...
+	if( map->size > (map->bucketCount * LOAD_FACTOR) ){
 		#ifdef DEBUG
 		fprintf(stdout, "Expanding HashMap size...\n");
 		#endif
 
-        // Getting the size of the new HashMap and alloc a new space
-        size_t newBucketCount = (size_t) getNextSize(map->bucketCount);
-        Entry** newBuckets = calloc(newBucketCount, sizeof(Entry*));
-        if (newBuckets == NULL) {
-            // Abort expansion.
-            return;
-        }
-        
-        // Move existing entries to the new HashMap
-        size_t i;
-        for (i = 0; i < map->bucketCount; i++) {
-            Entry* entry = map->buckets[i];
-            while (entry != NULL) {
-                Entry* next = entry->next;
-                size_t index = calculateIndex(newBucketCount, entry->hash);
-                entry->next = newBuckets[index];
-                newBuckets[index] = entry;
-                entry = next;
-            }
-        }
+		// Getting the size of the new HashMap and alloc a new space
+		size_t newBucketCount = (size_t) getNextSize(map->bucketCount);
+		Entry** newBuckets = calloc(newBucketCount, sizeof(Entry*));
+		if (newBuckets == NULL) {
+			// Abort expansion.
+			return;
+		}
+		
+		// Move existing entries to the new HashMap
+		size_t i;
+		for (i = 0; i < map->bucketCount; i++) {
+			Entry* entry = map->buckets[i];
+			while (entry != NULL) {
+				Entry* next = entry->next;
+				size_t index = calculateIndex(newBucketCount, entry->hash);
+				entry->next = newBuckets[index];
+				newBuckets[index] = entry;
+				entry = next;
+			}
+		}
 
-        // Free and update the HashMap
-        free(map->buckets);
-        map->buckets = newBuckets;
-        map->bucketCount = newBucketCount;
-    }
+		// Free and update the HashMap
+		free(map->buckets);
+		map->buckets = newBuckets;
+		map->bucketCount = newBucketCount;
+	}
 	#ifdef DEBUG
 	else {
 		fprintf(stdout, "HashMap size not changed.\n");
@@ -124,20 +124,20 @@ void hashmapExpandTest(HashMap* map) {
 
 
 int getNextSize(int number) {
-    int nextSize = number+(sqrt(number));
-    if (nextSize%2 == 0) nextSize++;
-    while (!naivePrime(nextSize)) nextSize+=2;
-    return nextSize;
+	int nextSize = number+(sqrt(number));
+	if (nextSize%2 == 0) nextSize++;
+	while (!naivePrime(nextSize)) nextSize+=2;
+	return nextSize;
 }
 
 
 int naivePrime(int number) {
-    long i, rac = (int)sqrt(number)+1;
-    if (number%2 == 0) return 0;
-    for (i=3; i<rac; i+=2) {
-        if (number%i == 0) return 0;
-    }
-    return 1;
+	long i, rac = (int)sqrt(number)+1;
+	if (number%2 == 0) return 0;
+	for (i=3; i<rac; i+=2) {
+		if (number%i == 0) return 0;
+	}
+	return 1;
 }
 
 
@@ -158,15 +158,15 @@ Entry* createEntry(char* key, int hash, char* IMEI, char *recordTime, char *prov
 	record->centroidY 	= centroidY;
 
 	// Then, create entry
-    Entry* entry = malloc(sizeof(Entry));
-    if (entry == NULL) {
-        return NULL;
-    }
-    entry->key 		= key;
-    entry->hash		= hash;
-    entry->record	= record;
-    entry->next 	= NULL;
-    return entry;
+	Entry* entry = malloc(sizeof(Entry));
+	if (entry == NULL) {
+		return NULL;
+	}
+	entry->key 		= key;
+	entry->hash		= hash;
+	entry->record	= record;
+	entry->next 	= NULL;
+	return entry;
 }
 
 
@@ -214,10 +214,10 @@ void hashmapPut(HashMap* map, char* IMEI, char *recordTime, char *providerId, ch
 		#endif
 	} else { // If an entry already exists at the index
 
-        while( hashmapNode->next!=NULL ){
-            hashmapNode = hashmapNode->next;
-        }
-        hashmapNode->next = newEntry; // inserts the value as the last element of the list
+		while( hashmapNode->next!=NULL ){
+			hashmapNode = hashmapNode->next;
+		}
+		hashmapNode->next = newEntry; // inserts the value as the last element of the list
 		#ifdef DEBUG
 		fprintf(stdout, "(This entry is NOT the first in this bucket)\n");
 		#endif
@@ -235,14 +235,14 @@ Entry* hashmapGet(HashMap* map, char* key) {
     size_t index = calculateIndex(map->bucketCount, hash);
 
     Entry* entry = map->buckets[index];
-    while (entry != NULL) {
-        if (equalKeys(entry->key, entry->hash, key, hash)) {
-            return entry;
-        }
-        entry = entry->next;
-    }
+	while (entry != NULL) {
+		if (equalKeys(entry->key, entry->hash, key, hash)) {
+			return entry;
+		}
+		entry = entry->next;
+	}
 
-    return NULL;
+	return NULL;
 }
 
 
@@ -254,7 +254,7 @@ void entryFree(Entry* entry){
 		free(entry->record->providerId);
 		free(entry->record->techno);
 		free(entry->record);
-        free(entry);
+		free(entry);
 	}
 
 	return;
@@ -263,74 +263,74 @@ void entryFree(Entry* entry){
 
 bool hashmapRemove(HashMap* map, char* key) {
 	int hash = map->hash(key);
-    size_t index = calculateIndex(map->bucketCount, hash);
+	size_t index = calculateIndex(map->bucketCount, hash);
 
-    // Pointer to the current entry
+	// Pointer to the current entry
 	Entry** p = &(map->buckets[index]);
-    Entry* current;
-    while ((current = *p) != NULL) {
-        if (equalKeys(current->key, current->hash, key, hash)) {
-            *p = current->next;
+	Entry* current;
+	while( (current = *p) != NULL ){
+		if (equalKeys(current->key, current->hash, key, hash)) {
+			*p = current->next;
 			entryFree(current);
-            map->size--;
-            return true;
-        }
+			map->size--;
+			return true;
+		}
 
-        p = &current->next;
-    }
+		p = &current->next;
+	}
 
-    return false;
+	return false;
 }
 
 
 Entry* hashmapPop(HashMap* map, char* key){
 	int hash = map->hash(key);
-    size_t index = calculateIndex(map->bucketCount, hash);
+	size_t index = calculateIndex(map->bucketCount, hash);
 
-    // Pointer to the current entry
+	// Pointer to the current entry
 	Entry** p = &(map->buckets[index]);
-    Entry* current;
-    while ((current = *p) != NULL) {
-        if (equalKeys(current->key, current->hash, key, hash)) {
-            *p = current->next;
-            map->size--;
-            return current;
-        }
+	Entry* current;
+	while( (current = *p) != NULL ){
+		if( equalKeys(current->key, current->hash, key, hash) ){
+			*p = current->next;
+			map->size--;
+			return current;
+		}
 
-        p = &current->next;
-    }
+		p = &current->next;
+	}
 
-    return NULL;
+	return NULL;
 }
 
 
 // Simple operations
 
-int hashmapCountTechno(HashMap* map, char* techno) {
-    int count;
+int hashmapCountTechno(HashMap* map, char* techno){
+	int count;
 	count = 0;
 
-    size_t i;
-    for (i = 0; i < map->bucketCount; i++) {
-        Entry* entry = map->buckets[i];
-        while (entry != NULL) {
-            if ( strcmp(entry->record->techno, techno) == 0 ){
-                count++;
-            }
-            entry = entry->next;
-        }
-    }
+	size_t i;
+	for (i = 0; i < map->bucketCount; i++) {
+		Entry* entry = map->buckets[i];
+		while (entry != NULL) {
+			if ( strcmp(entry->record->techno, techno) == 0 ){
+				count++;
+			}
+			entry = entry->next;
+		}
+	}
 
-    return count;
+	return count;
 }
 
 
 // Miscellaneous (comparison, hashing, for each)
 
-bool equalKeys(char* keyA, int hashA, char* keyB, int hashB) {
-    if (hashA != hashB) {
-        return false;
-    }
+bool equalKeys(char* keyA, int hashA, char* keyB, int hashB){
+	if (hashA != hashB) {
+		return false;
+	}
 	return strcmp(keyA, keyB) == 0;
 }
 
@@ -443,14 +443,14 @@ void entryDisplay(Entry* entry, int index){
 
 
 void hashmapDisplay(HashMap* map) {
-    size_t i;
-    for (i = 0; i < map->bucketCount; i++) {
-        Entry* entry = map->buckets[i];
-        while (entry != NULL) {
+	size_t i;
+	for (i = 0; i < map->bucketCount; i++) {
+		Entry* entry = map->buckets[i];
+		while (entry != NULL) {
 			entryDisplay(entry, i);
-            entry = entry->next;
-        }
-    }
+			entry = entry->next;
+		}
+	}
 }
 
 
@@ -497,14 +497,14 @@ void hashmapDisplayGraph(HashMap* map) {
 	int nonEmptyBuckets = 0;
 	int nonEmptyBucketsSum = 0;
 
-    for (i = 0; i < map->bucketCount; i++) {
+	for(i = 0; i < map->bucketCount; i++){
 		countEntries = 0;
-        Entry* entry = map->buckets[i];
-        while (entry != NULL) {
-            countEntries++;
-            entry = entry->next;
-        }
-		
+		Entry* entry = map->buckets[i];
+		while (entry != NULL) {
+			countEntries++;
+			entry = entry->next;
+		}
+
 		if( countEntries > 0 ){
 			nonEmptyBucketsSum += countEntries;
 			nonEmptyBuckets++;
@@ -521,7 +521,7 @@ void hashmapDisplayGraph(HashMap* map) {
 				fprintf(stdout, "\e[100m \e[49m");
 			}
 		}
-    }
+	}
 
 	fprintf(stdout, "\e[24m\n");
 	for( cols=1 ; cols<=w.ws_col ; cols++ ){

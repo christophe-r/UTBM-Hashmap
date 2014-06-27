@@ -14,17 +14,17 @@ typedef struct {
 
 typedef struct Entry Entry; // KV Container equivalent
 struct Entry {
-    char* key;
-    int hash;
+	char* key;
+	int hash;
 	Record* record;
-    Entry* next;
+	Entry* next;
 };
 
 typedef struct {
-    Entry** buckets;
-    size_t bucketCount;
-    int (*hash)(char* key);
-    size_t size;
+	Entry** buckets;
+	size_t bucketCount;
+	int (*hash)(char* key);
+	size_t size;
 } HashMap;
 
 

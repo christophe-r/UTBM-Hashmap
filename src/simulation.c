@@ -57,7 +57,7 @@ void runSimulation() {
 	// Free the Hashmap
 	hashmapFree(map);
 
-    return;
+	return;
 }
 
  
